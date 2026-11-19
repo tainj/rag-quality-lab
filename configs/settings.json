@@ -1,0 +1,117 @@
+{
+  "RAG_EVAL_AGENT_ID": "rag_eval_agent",
+  "AGENT_WORKER_POOL_SIZE": 3,
+  "LLM_MODEL": "ornith-35b-fp8",
+  "LLM_TEMPERATURE": 0.0,
+  "LLM_MAX_TOKENS": 1024,
+  "TESTSET_SIZE": 1000,
+  "QUERY_DISTRIBUTION": {
+    "single_hop_specific": 0.45,
+    "multi_hop_abstract": 0.2,
+    "multi_hop_specific": 0.15,
+    "exact_match": 0.1,
+    "unanswerable": 0.1
+  },
+  "EMBEDDING_MODEL_PRESETS": {
+    "google/embeddinggemma-300m": {
+      "vector_size": 768,
+      "query_prefix": "task: search result | query: ",
+      "document_prefix": "title: none | text: "
+    }
+  },
+  "PIPELINE_DEV_FRACTION": 0.7,
+  "PIPELINE_SELECT_METRIC": "recall@5",
+  "PIPELINE_TOP_N_GENERATION": 3,
+  "PIPELINE_GENERATION_SAMPLE": 30,
+  "PIPELINE_REAL_SAMPLE": 5,
+  "PIPELINE_GENERATION_TOP_K": 5,
+  "EVAL_COLLECTION_NAME_PREFIX": "rag_eval_v2",
+  "EVAL_COLLECTION_EMBEDDING": {
+    "model_name": "google/embeddinggemma-300m",
+    "vector_size": 768,
+    "query_prefix": "task: search result | query: ",
+    "document_prefix": "title: none | text: ",
+    "batch_size": 32,
+    "sparse": {
+      "mode": "lemmatized",
+      "bm25_languages": [
+        "russian"
+      ],
+      "dense_rrf_weight": 2,
+      "rrf_candidate_k": 100
+    }
+  },
+  "EVAL_COLLECTION_CHUNKING": {
+    "chunk_size": 1024,
+    "chunk_overlap": 50,
+    "tokenizer": "Xenova/gpt-4"
+  },
+  "EVAL_COLLECTION_RERANKER": {
+    "enabled": false
+  },
+  "EVAL_DATASETS": {
+    "synthetic_bpmsoft": {
+      "type": "synthetic",
+      "path": "synthetic_qa.jsonl"
+    },
+    "rubq_retrieval": {
+      "type": "rubq",
+      "hf_name": "ai-forever/rubq-retrieval"
+    }
+  },
+  "RAGAS_METRICS": [
+    "answer_correctness",
+    "answer_relevancy",
+    "faithfulness",
+    "answer_similarity",
+    "context_precision",
+    "context_recall"
+  ],
+  "RAGAS_EMBED_MODEL": "google/embeddinggemma-300m",
+  "RAGAS_NUM_WORKERS": 24,
+  "RAGAS_TIMEOUT": 90,
+  "RAGAS_EVAL_SAMPLE_FRACTION": 0.0,
+  "ANSWER_CORRECTNESS_USE_GEVAL": false,
+  "TOP_K": 5,
+  "K_SET": [
+    1,
+    3,
+    5
+  ],
+  "RELEVANCE_THRESHOLD": 0.3,
+  "RELEVANCE_METRIC": "coverage",
+  "DEDUP_SIMILARITY_THRESHOLD": 0.92,
+  "LEAKAGE_WORD_OVERLAP_THRESHOLD": 0.4,
+  "UNANSWERABLE_SYSTEM_PROMPT": "Ты генерируешь вопросы по домену BPMSoft, которые НЕЛЬЗЯ ответить из существующей базы знаний. Вопросы должны звучать релевантно домену, но касаться несуществующего функционала.",
+  "EXACT_MATCH_SYSTEM_PROMPT": "Ты генерируешь вопросы, требующие точного поиска по редким терминам, кодам, ID из документации BPMSoft.",
+  "SINGLE_HOP_PROMPT": "Ты создаёшь тестовый набор для оценки RAG-системы в конкретной предметной области.\nНа основе приведённого отрывка составь ОДИН вопрос, который реальный пользователь этой базы знаний мог бы задать,\nи ответ на этот вопрос должен полностью содержаться в отрывке.\n\nПравила:\n- Вопрос не должен дословно цитировать длинные фразы из отрывка (избегай тривиального совпадения ключевых слов).\n- чередуй типы вопросов: фактический, «почему/как», сравнение, определение — не повторяй один и тот же паттерн.\n- Эталонный ответ должен быть кратким и опираться только на отрывок.\n\nОтрывок:\n\"\"\"{passage}\"\"\"\n",
+  "MULTI_HOP_PROMPT": "Ты создаёшь тестовый набор для оценки RAG-системы в конкретной предметной области.\nНа основе ДВУХ отрывков ниже (из одной базы знаний, возможно из разных документов) составь ОДИН вопрос,\nдля ответа на который необходимо объединить информацию из ОБОИХ отрывков.\n\nПравила:\n- Вопрос должен требовать осмысленного рассуждения над обоими отрывками, его нельзя ответить, опираясь только на один из них.\n- Эталонный ответ должен синтезировать оба отрывка.\n\nОтрывок A:\n\"\"\"{passage_a}\"\"\"\n\nОтрывок B:\n\"\"\"{passage_b}\"\"\"\n",
+  "UNANSWERABLE_PROMPT": "Ты создаёшь тестовый набор для оценки RAG-системы. На основе приведённого отрывка\nсоставь ОДИН правдоподобно звучащий вопрос, который ЯВНО СВЯЗАН с темой/доменом отрывка, но ответ на который\nНЕ содержится в нём (смежный вопрос «мимо цели»). Это проверяет, что система корректно отказывается отвечать,\nа не галлюцинирует.\n\nОтрывок:\n\"\"\"{passage}\"\"\"\n",
+  "EXACT_MATCH_PROMPT": "Ты создаёшь тестовый набор для оценки RAG-системы в конкретной предметной области.\nНа основе приведённого отрывка составь ОДИН вопрос, ответ на который требует точного поиска конкретной детали:\nредкий термин, код, идентификатор, номер версии, дата, URL или другой уникальный факт, встречающийся только один раз.\n\nПравила:\n- Вопрос должен целиться в точную, уникальную деталь — не в общее резюме.\n- Эталонный ответ должен быть дословным значением из отрывка.\n\nОтрывок:\n\"\"\"{passage}\"\"\"\n",
+  "DEDUP_JUDGE_PROMPT": "Эти два вопроса по сути задают одно и то же (допускаем перефразировку)?\nОтветь одним словом: ДА или НЕТ.\n\nВ1: {q1}\nВ2: {q2}\n",
+  "FINAL_FORMAT_VERSION": "1.0",
+  "TARGET_VALIDATED_SAMPLES": 400,
+  "CSV_PATH": "data_bpmsoft/1.9-all-comma.csv",
+  "DATA_DIR": "dataset",
+  "RUNS_DIR": "runs",
+  "AGENT_PLATFORM_URL": "http://agent-core:8003",
+  "LLM_BASE_URL": "http://litellm-proxy:8005/v1",
+  "LLM_VIA_PLATFORM": true,
+  "RAG_SYSTEM_PROMPT": "Ты — ассистент для оценки качества RAG-системы.\nОтвечай на вопрос, опираясь ТОЛЬКО на приведённый контекст.\nЕсли в контексте нет нужной информации — ответь, что информации недостаточно.\nОтвечай кратко и по делу.",
+  "NEGATIVE_REJECTION_PROMPT": "Ты судья. Ответь ТОЛЬКО JSON.\n\nВопрос: {question}\nОтвет системы: {answer}\n\nОтвечает ли система отказом (не может ответить / не знает / нет информации)?\n- Да (declined=true): ответ содержит отказ, \"не знаю\", \"нет информации\"\n- Нет (declined=false): ответ содержит конкретную информацию, даже если некорректную\n\nВыведи только JSON: {{\"declined\": true/false, \"reason\": \"краткая причина\"}}",
+  "AGENT_TOOL_PROMPT": "Ты ОБЯЗАН использовать инструмент {tool_name} для ответа на каждый вопрос.\nСначала вызови {tool_name}, затем ответь по найденному контексту. Не отвечай без вызова поиска.",
+  "AGENT_MODEL": "ornith-35b-fp8",
+  "AGENT_DESCRIPTION": "Ассистент по документации BPMSoft. Отвечает по базе знаний.",
+  "RAG_TOOL_DESCRIPTION": "Поиск в базе знаний BPMSoft. Используй для вопросов о настройке и работе системы. Возвращает фрагменты документации с источниками.",
+  "LLM_REASONING_EFFORT": "none",
+  "LLM_MAX_RETRIES": 1,
+  "SYNTHESIS_DEFAULT_SIZE": 20,
+  "SYNTHESIS_MAX_SOURCE_CHARS": 1200,
+  "SYNTHESIS_GOLD_MAX_CHARS": 400,
+  "SYNTHESIS_MAX_ATTEMPTS_FACTOR": 4,
+  "SYNTHESIS_SYSTEM_PROMPT": "Ты создаёшь проверяемый набор вопросов по документации BPMSoft. Используй только переданные источники. Верни вопрос, краткий эталонный ответ и точные дословные цитаты, которые подтверждают ответ. Цитата должна быть коротким свидетельством, а не целым документом. Для multi_hop ответ должен требовать информации из двух источников. Для exact_match спрашивай о конкретном термине, коде, поле или значении. Не выдумывай факты и идентификаторы. Вопрос должен быть понятен без чтения источника. В evidence указывай source_id (source-1 или source-2), а не doc_id. Для multi_hop нужны цитаты отдельно из source-1 и source-2. Копируй quote дословно, без перефразирования и исправления пунктуации.",
+  "JUDGE_MAX_TOKENS": 16384,
+  "JUDGE_TIMEOUT": 240,
+  "JUDGE_INCLUDE_REASON": false,
+  "JUDGE_MAX_RETRIES": 0
+}

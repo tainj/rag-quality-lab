@@ -1,0 +1,29 @@
+# gui       — Gradio interface on http://localhost:7860
+# pipeline  — CLI, one-off:  docker compose run --rm pipeline <command>
+
+x-common: &common
+  image: rag-eval
+  volumes:
+    - ./configs:/app/configs:ro # JSON settings and RAG presets
+    - ./data_bpmsoft:/app/data_bpmsoft:ro # knowledge base CSV
+    - ./dataset:/app/dataset:ro # synthetic_qa.jsonl
+    - ./data:/app/data # model / dataset cache
+    - ./runs:/app/runs # pipeline results
+  env_file:
+    - path: .env # AGENT_PLATFORM_URL / AGENT_PLATFORM_TOKEN / LLM_API_KEY
+      required: false
+  environment:
+    LLM_BASE_URL: ${LLM_BASE_URL:-http://litellm-proxy:8005/v1}
+
+services:
+  gui:
+    <<: *common
+    build: .
+    ports:
+      - "${GUI_PORT:-7860}:7860"
+    command: ["gui"]
+
+  pipeline:
+    <<: *common
+    profiles: ["cli"]
+    command: ["--help"]

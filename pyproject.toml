@@ -1,0 +1,61 @@
+[project]
+name = "rag-eval"
+version = "0.1.0"
+description = "RAG evaluation pipeline — synthetic dataset generation and validation"
+requires-python = ">=3.12"
+dependencies = [
+    "ragas>=0.4.0",
+    "sentence-transformers>=3.0.0",
+    "openai>=1.0.0",
+    "httpx>=0.28.1",
+    "langchain-openai>=1.1.1",
+    "langchain-huggingface>=0.1.0",
+    "llama-index>=0.14.10",
+    "qdrant-client>=1.16.1",
+    "pandas>=2.0",
+    "datasets>=2.0",
+    "beautifulsoup4>=4.14.3",
+    "html2text>=2025.4.15",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+    "tqdm>=4.0.0",
+    "pyarrow>=15.0.0",
+    "matplotlib>=3.11.1",
+    "beir>=2.2.0",
+    "ir-datasets>=0.6.3",
+    "langchain-community<0.4.0",
+    "langchain-google-vertexai>=3.2.4",
+    "deepeval>=4.1.4",
+    "litellm>=1.93.0",
+    "nest-asyncio>=1.6.0",
+    "gradio>=6.29.1",
+    "typer>=0.27.0",
+    "rich>=14.3.4",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+    "pyright>=1.1.410",
+]
+
+[tool.ruff.lint]
+extend-select = [
+    "I",
+    "T20",
+    "RUF100",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"evalkit/*.py" = ["T201"]
+"scripts/*.py" = ["T201"]
+"notebooks/*.py" = ["T201"]
+"notebooks/*.ipynb" = ["T201", "I001"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+
+[tool.pyright]
+reportMissingTypeStubs = false
