@@ -2,9 +2,8 @@
   "presets": [
     {
       "name": "stand_dense_512",
-      "title": "embeddinggemma, чанки 512, только dense",
+      "title": "Чанки 512, только dense",
       "overrides": {
-        "embedding.model_name": "google/embeddinggemma-300m",
         "embedding.sparse.mode": "off",
         "chunking.chunk_size": 512,
         "chunking.chunk_overlap": 50
@@ -13,9 +12,8 @@
     },
     {
       "name": "stand_dense_1024",
-      "title": "embeddinggemma, чанки 1024, только dense",
+      "title": "Чанки 1024, только dense",
       "overrides": {
-        "embedding.model_name": "google/embeddinggemma-300m",
         "embedding.sparse.mode": "off",
         "chunking.chunk_size": 1024,
         "chunking.chunk_overlap": 50
@@ -24,9 +22,8 @@
     },
     {
       "name": "stand_hybrid_512",
-      "title": "Гибрид embeddinggemma + BM25 (лемматизация), чанки 512",
+      "title": "Гибрид с BM25 (лемматизация), чанки 512",
       "overrides": {
-        "embedding.model_name": "google/embeddinggemma-300m",
         "embedding.sparse.mode": "lemmatized",
         "embedding.sparse.dense_rrf_weight": 2,
         "chunking.chunk_size": 512,
@@ -36,9 +33,8 @@
     },
     {
       "name": "stand_hybrid_qbm25_512",
-      "title": "Гибрид embeddinggemma + BM25 Qdrant, чанки 512",
+      "title": "Гибрид с BM25 Qdrant, чанки 512",
       "overrides": {
-        "embedding.model_name": "google/embeddinggemma-300m",
         "embedding.sparse.mode": "qdrant_bm25",
         "embedding.sparse.dense_rrf_weight": 2,
         "chunking.chunk_size": 512,

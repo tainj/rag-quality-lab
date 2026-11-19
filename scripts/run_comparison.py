@@ -80,7 +80,6 @@ def main():
         raise ValueError("Request timeout must be positive")
     settings.update(
         LLM_VIA_PLATFORM=True,
-        LLM_REASONING_EFFORT="none",
         LLM_MAX_RETRIES=0,
         RAGAS_TIMEOUT=timeout,
         JUDGE_MAX_TOKENS=budget,
@@ -103,12 +102,7 @@ def main():
         raise ValueError(f"Unknown dataset: {args.dataset}")
     client = make_client()
     variants = []
-    prompt_b = (
-        "Ты — помощник по BPMSoft. Всегда сначала используй поиск. Отвечай только по найденным источникам. "
-        "Начни с прямого ответа. Для вопросов о настройке дай короткие нумерованные шаги. "
-        "Укажи названия или идентификаторы источников. Если подтверждения нет, явно скажи, что данных недостаточно. "
-        "Не придумывай названия полей, версии и действия."
-    )
+    prompt_b = os.environ.get("COMPARISON_SYSTEM_PROMPT", "Приведите ответ и укажите подтверждающий фрагмент. Если ответа в документах нет, сообщите об этом.")
     bases = preset_configs(
         args.preset or (None if args.full else ["stand_dense_512", "stand_hybrid_512"])
     )

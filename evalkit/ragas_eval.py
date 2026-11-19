@@ -28,6 +28,9 @@ from ragas.metrics import (
     faithfulness,
 )
 
+from config import LLM_MODEL, RAGAS_EMBED_MODEL
+
+
 METRIC_MAP = {
     "answer_correctness": answer_correctness,
     "answer_relevancy": answer_relevancy,
@@ -52,11 +55,11 @@ def build_ragas_dataset(rows: list[dict]):
 def run_ragas_eval(
     rows: list[dict],
     metrics: list[str] | None = None,
-    embed_model: str | None = "google/embeddinggemma-300m",
+    embed_model: str | None = RAGAS_EMBED_MODEL,
     num_workers: int = 1,
     timeout: int = 1000,
     llm: Any | None = None,
-    llm_model: str = "gpt-4o-mini",
+    llm_model: str = LLM_MODEL,
     llm_base_url: str | None = None,
     llm_api_key: str | None = None,
 ) -> Any:
@@ -66,7 +69,7 @@ def run_ragas_eval(
     Args:
         rows: List of dicts with question, answer, contexts, ground_truth
         metrics: List of metric names to compute. Defaults to all 6 metrics.
-        embed_model: Embedding model name for answer_similarity (e.g. "google/embeddinggemma-300m")
+        embed_model: Embedding model name for answer_similarity (e.g. "intfloat/multilingual-e5-base")
         num_workers: Number of parallel workers for RAGAS evaluation
         timeout: Timeout in seconds for RAGAS evaluation (default 1000)
         llm: Pre-configured LLM wrapper (LangchainLLMWrapper). If None, creates one from llm_* params.
