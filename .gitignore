@@ -14,6 +14,7 @@ runs/
 logs/
 *.log
 *.csv
+!docs/results/*.csv
 *.jsonl
 *.db
 *.sqlite*
@@ -21,6 +22,7 @@ logs/
 *.zip
 *.tar*
 *.mp4
+!docs/demo/*.mp4
 *.pdf
 *.pptx
 .*local/
